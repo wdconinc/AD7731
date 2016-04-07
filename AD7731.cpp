@@ -17,16 +17,18 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "AD7731.h"
 
-AD7731::AD7731(bool serial = false, int baud = 9600)
-: hasSerial(serial)
+AD7731::AD7731(unsigned int baud = 0)
+: hasSerial(false)
 {
   // Initialize SPI connection
   SPI.begin();
   SPI.setBitOrder(MSBFIRST);
   SPI.setDataMode(SPI_MODE3);
   SPI.setClockDivider(SPI_CLOCK_DIV16);
-  
-  if (hasSerial) {
+
+  // Initialize serial connection
+  if (baud > 0) {
+    hasSerial = true;
     Serial.begin(baud);
     Serial.println("AD7731 init");
   }
@@ -37,6 +39,7 @@ AD7731::~AD7731()
   // Close SPI connection
   SPI.end();
 
+  // Close serial connection
   if (hasSerial) {
     Serial.println("AD7731 end");
     Serial.end();

@@ -114,7 +114,7 @@ class AD7731 {
 
   public:
 
-    AD7731();
+    AD7731(bool serial = false, int baud = 9600);
     ~AD7731();
 
 
@@ -147,10 +147,8 @@ class AD7731 {
       V_ref_in_plus  = plus;
     }
     float getRefInMinus() { return V_ref_in_minus; };
-    
 
-    unsigned int getData();
-
+    // Reset the chip
     void reset() {
       // Writing 4 times 8 ones resets the chip
       SPI.transfer(0xFF);
@@ -175,13 +173,13 @@ class AD7731 {
     uint16_t readRegisterMode() {
       SPI.transfer(AD7731_COMM_READ_REGISTER_MODE_Y);
       uint16_t reg = readBytes(2);
-      uint16_t reg2 = SPI.transfer(0);
       if (hasSerial) {
         Serial.print("AD7731: mode ");
-        Serial.println(register_mode, HEX);
+        Serial.println(reg, HEX);
       }
     }
 
+    // Read a specified number of bytes from SPI
     uint32_t readBytes(unsigned int n) {
       uint32_t value = 0;
       for (unsigned int i = 0; i < n; i++) {
@@ -194,15 +192,11 @@ class AD7731 {
 
     bool hasSerial;
 
-    // Registers for writing
+    // Registers for writing (local copy)
     uint16_t register_mode; // 16 bits
     uint16_t register_gain; // 16 bits
     uint32_t register_filter; // 24 bits
     uint32_t register_offset; // 24 bits
-
-
-    AD7731_MODE_RANGE range;
-    AD7731_MODE_POLARITY polarity;
 };
 
 #endif // AD7731
