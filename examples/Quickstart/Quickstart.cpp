@@ -15,25 +15,34 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+/*
+ * Qiuckstart.cpp
+ *
+ *  Created on: Apr 7, 2016
+ *      Author: Wouter Deconinck
+ */
+
 #include "AD7731.h"
+#include "Serial.h"
 
-AD7731::AD7731()
+// Create global AD7731 ADC variable
+AD7731 ADC();
+
+void setup()
 {
-  // Initialize SPI connection
-  SPI.begin();
-  SPI.setBitOrder(MSBFIRST);
-  SPI.setDataMode(SPI_MODE3);
-  SPI.setClockDivider(SPI_CLOCK_DIV16);
+  // Start serial
+  Serial.begin(9600);
 
-  // Initialize register variables
-  register_mode = readRegisterMode();
-  register_gain = readRegisterGain();
-  register_filter = readRegisterFilter();
-  register_offset = readRegisterOffset();
+  // Reset ADC
+  ADC.reset(); // not strictly required
+
+  // Print mode register to serial stream
+  ADC.printRegisterMode(Serial);
 }
 
-AD7731::~AD7731()
+void loop()
 {
-  // Close SPI connection
-  SPI.end();
+  Serial.println(ADC.getData(),HEX);
+
+  delay(1000);
 }
