@@ -1,0 +1,12 @@
+#include "AD7731.h"
+
+AD7731 adc(9600); // serial baud rate 9600
+
+void setup() {
+  adc.initialize();
+}
+
+void loop() {
+  adc.readRegisterMode();
+  delay(1000);
+}
